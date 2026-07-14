@@ -1,0 +1,7 @@
+
+[base]
+BaseURL="http://localhost:8080"
+Debug=true
+
+[database]
+PostgresDSN="postgres://postgres:postgres@localhost:5432/volley?sslmode=disable"
