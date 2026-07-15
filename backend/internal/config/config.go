@@ -13,8 +13,11 @@ type DatabaseConfig struct {
 }
 
 type BaseConfig struct {
-	BaseURL string `toml:"BaseURL"`
-	Debug   bool   `toml:"Debug"`
+	BaseURL       string `toml:"BaseURL"`
+	Debug         bool   `toml:"Debug"`
+	JWTSecret     string `toml:"JWTSecret"`
+	JWTExpiration int64  `toml:"JWTExpiration"`
+	JWTIssuer     string `toml:"JWTIssuer"`
 }
 
 type VConfig struct {
