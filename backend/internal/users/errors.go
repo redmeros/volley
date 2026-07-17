@@ -5,3 +5,4 @@ import "errors"
 var UserAlreadyExistsError = errors.New("user already exists")
 var UserNotFoundError = errors.New("user not found")
 var InvalidPasswordError = errors.New("invalid username or password")
+var UserNotAuthenticatedError = errors.New("user not authenticated")

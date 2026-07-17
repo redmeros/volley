@@ -2,6 +2,7 @@ package users
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -14,6 +15,14 @@ type VolleyClaims struct {
 	jwt.RegisteredClaims
 	IsAdmin bool   `json:"is_admin"`
 	Role    string `json:"role"`
+}
+
+func (c *VolleyClaims) GetUserID() (int, error) {
+	id, err := strconv.Atoi(c.Subject)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
 }
 
 func validateToken(tokenString string, app *app.VApp) (*VolleyClaims, error) {

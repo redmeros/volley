@@ -10,3 +10,4 @@ help:
 db-migrate:
 	@echo "Running database migrations..."
 	psql "$(DB_DSN)" -f migrations/001_initial.sql
+	psql "$(DB_DSN)" -f migrations/002_user_role_add.sql

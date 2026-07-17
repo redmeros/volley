@@ -54,6 +54,18 @@ func AuthMiddleware(a *app.VApp) gin.HandlerFunc {
 	}
 }
 
+func GetClaimsFromContext(c *gin.Context) (*VolleyClaims, error) {
+	claimsStruct, ok := c.Get("claims")
+	if !ok {
+		return nil, UserNotAuthenticatedError
+	}
+	claims, ok := claimsStruct.(*VolleyClaims)
+	if !ok {
+		return nil, UserNotAuthenticatedError
+	}
+	return claims, nil
+}
+
 func RegisterTestProtectedHandler(a *app.VApp) {
 	userModule := getUserModule(a)
 
