@@ -13,7 +13,7 @@ export class TournamentsService {
     
     getTournaments() : Observable<Tournament[]> {
         return this.http
-            .get<Tournament[]>(this.config.apiUrl + "/tournaments")
+            .get<Tournament[]>(this.config.apiUrl + "/tournaments/")
             .pipe(
                 tap((tournaments) => {
                     console.log("Fetched tournaments:", tournaments);

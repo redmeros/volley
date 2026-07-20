@@ -1,7 +1,6 @@
-
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { IonApp, IonSplitPane, IonMenu, IonContent, IonList, IonListHeader, IonNote, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterOutlet, IonRouterLink, IonToast, ToastController } from '@ionic/angular/standalone';
+import { IonApp, IonSplitPane, IonMenu, IonContent, IonList, IonListHeader, IonNote, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterOutlet, IonRouterLink, IonToast, ToastController, IonButton, IonHeader, IonToolbar, IonTitle, IonButtons, IonMenuButton } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { balloonOutline, personOutline } from 'ionicons/icons';
 import { MessageService } from './services/message.service';
@@ -13,11 +12,22 @@ import { Subject, takeUntil } from 'rxjs';
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  imports: [
+  imports: [IonButtons, IonToolbar, IonHeader, IonButton,
     RouterLink,
-    RouterLinkActive, IonApp, IonSplitPane, IonMenu, IonContent, IonList, IonListHeader, IonNote, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterLink, IonRouterOutlet,
-    IonToast
-],
+    RouterLinkActive,
+    IonApp,
+    IonButton,
+    IonMenuToggle,
+    IonMenu,
+    IonContent,
+    IonList,
+    IonMenuToggle,
+    IonItem,
+    IonIcon,
+    IonLabel,
+    IonRouterLink,
+    IonRouterOutlet,
+    IonToast, IonTitle, IonMenuButton],
 })
 export class AppComponent implements OnInit, OnDestroy {
   

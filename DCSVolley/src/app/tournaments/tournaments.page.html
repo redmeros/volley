@@ -1,1 +1,3 @@
-tournaments!
+@for (t of tournaments(); track $index) {
+  <app-tournament [model]="t"></app-tournament>  
+}
