@@ -12,11 +12,10 @@ import { Subject, takeUntil } from 'rxjs';
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  imports: [IonButtons, IonToolbar, IonHeader, IonButton,
+  imports: [IonButtons, IonToolbar, IonHeader,
     RouterLink,
     RouterLinkActive,
     IonApp,
-    IonButton,
     IonMenuToggle,
     IonMenu,
     IonContent,
@@ -30,10 +29,10 @@ import { Subject, takeUntil } from 'rxjs';
     IonToast, IonTitle, IonMenuButton],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  
+
   private toastController = inject(ToastController);
   private messageService = inject(MessageService);
-  
+
   private destroy$ = new Subject<void>();
 
   constructor() {
@@ -44,30 +43,30 @@ export class AppComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
- 
+
 
   ngOnInit(): void {
-     const s = this.messageService.message$
-     .pipe(takeUntil(this.destroy$))
-     .subscribe(msg => {
-      this.toastController.create({
-        message: msg.text,
-        duration: msg.duration,
-        position: 'bottom',
-        color: msg.color,
-        animated: true,
-        buttons: [
-          {
-            text: 'Zamknij',
-            role: 'cancel'
-          }
-        ] 
-        
-      }).then(toast => toast.present());
+    const s = this.messageService.message$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(msg => {
+        this.toastController.create({
+          message: msg.text,
+          duration: msg.duration,
+          position: 'bottom',
+          color: msg.color,
+          animated: true,
+          buttons: [
+            {
+              text: 'Zamknij',
+              role: 'cancel'
+            }
+          ]
 
-     });
+        }).then(toast => toast.present());
+
+      });
   }
-  
 
-  
+
+
 }
