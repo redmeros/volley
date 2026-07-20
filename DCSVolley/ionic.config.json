@@ -1,0 +1,7 @@
+{
+  "name": "DCSVolley",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

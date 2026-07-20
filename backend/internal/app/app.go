@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/graceful"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -98,8 +99,19 @@ func NewVApp(config *config.VConfig) (*VApp, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to create router: %w", err)
 	}
+	r.Use(cors.New(cors.Config{
+		AllowOriginFunc: func(origin string) bool {
+			return true
+		},
+		AllowMethods:  []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "QUERY"},
+		AllowHeaders:  []string{"Origin", "Content-Type", "Content-Length", "Authorization"},
+		ExposeHeaders: []string{"Content-Length"},
+		MaxAge:        12 * time.Hour,
+	}))
 	v.Router = r
+
 	v.Api = v.Router.Group("/api")
+
 	v.Api.Use(gin.Recovery())
 	v.Api.Use(func(c *gin.Context) {
 		c.Set(appKey{}, v)

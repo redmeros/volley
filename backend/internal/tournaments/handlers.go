@@ -80,8 +80,8 @@ func createTournament(c *gin.Context) {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-	// }
-	c.JSON(200, gin.H{"status": "success"})
+
+	c.JSON(200, t)
 }
 
 func listTournaments(c *gin.Context) {

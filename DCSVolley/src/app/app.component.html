@@ -1,0 +1,31 @@
+<ion-app>
+  <ion-split-pane contentId="main-content">
+    <ion-menu contentId="main-content" type="overlay">
+      <ion-content>
+        <ion-list id="inbox-list">
+          <ion-list-header>DCS Volley</ion-list-header>
+          <ion-note>System ligi siatkówki</ion-note>
+
+            <ion-menu-toggle auto-hide="false">
+              <ion-item routerDirection="root" routerLink="/tournaments" lines="none" detail="false" routerLinkActive="selected">
+                <ion-icon aria-hidden="true" slot="start" name="balloon-outline"></ion-icon>
+                <ion-label>Zawody</ion-label>
+              </ion-item>
+           </ion-menu-toggle>
+        </ion-list>
+        
+        <ion-list id="labels-list">
+          <ion-item routerDirection="root" routerLink="/login" detail=false routerLinkActive="selected" lines="none">
+            <ion-icon aria-hidden="true" slot="start" name="person-outline"></ion-icon>
+            <ion-label>Login</ion-label>
+          </ion-item>
+        </ion-list>
+
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+  <ion-toast>
+    
+  </ion-toast>
+</ion-app>
