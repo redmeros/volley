@@ -13,6 +13,7 @@ const alg = "HS256"
 
 type VolleyClaims struct {
 	jwt.RegisteredClaims
+	Email   string `json:"email"`
 	IsAdmin bool   `json:"is_admin"`
 	Role    string `json:"role"`
 }
@@ -31,7 +32,6 @@ func validateToken(tokenString string, app *app.VApp) (*VolleyClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 		return []byte(m.vapp.Config.Base.JWTSecret), nil
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -78,9 +78,15 @@ func validateToken(tokenString string, app *app.VApp) (*VolleyClaims, error) {
 		return nil, fmt.Errorf("invalid issuer")
 	}
 
+	email, ok := claims["email"].(string)
+	if !ok {
+		return nil, fmt.Errorf("invalid email claim")
+	}
+
 	return &VolleyClaims{
 		IsAdmin: isAdmin,
 		Role:    role,
+		Email:   email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   subject,
 			Issuer:    issuer,
@@ -101,6 +107,7 @@ func generateToken(user *User, app *app.VApp) (string, error) {
 			Issuer:    m.vapp.Config.Base.JWTIssuer,
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(expiration) * time.Second)),
 		},
+		Email:   user.Email,
 		IsAdmin: false,
 		Role:    "user",
 	}
@@ -108,7 +115,6 @@ func generateToken(user *User, app *app.VApp) (string, error) {
 	t.Claims = claims
 
 	tokenStr, err := t.SignedString([]byte(app.Config.Base.JWTSecret))
-
 	if err != nil {
 		return "", err
 	}
