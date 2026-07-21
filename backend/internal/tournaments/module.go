@@ -16,7 +16,7 @@ type TournamentModule struct {
 func NewTournamentModule(a *app.VApp) *TournamentModule {
 	return &TournamentModule{
 		vapp:            a,
-		tournamentGroup: a.Api.Group("/tournaments"),
+		tournamentGroup: a.API.Group("/tournaments"),
 	}
 }
 

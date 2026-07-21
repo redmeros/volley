@@ -1,0 +1,2 @@
+// Package tournaments provides functionality for managing and organizing tournaments, including creating, updating, and retrieving tournament information. It includes data structures and methods for handling tournament details, participants, matches, and results. This package is designed to facilitate the development of applications that require tournament management features.
+package tournaments

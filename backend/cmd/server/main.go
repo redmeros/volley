@@ -29,5 +29,8 @@ func main() {
 
 	pterm.Info.Printfln("Starting application with config: %+v", cfg)
 
-	a.Run(ctx)
+	err = a.Run(ctx)
+	if err != nil {
+		log.Fatalf("Failed to run app: %v", err)
+	}
 }

@@ -1,1 +1,55 @@
-login
+<div class="login-page">
+	<ion-content [fullscreen]="true" class="login-content">
+		<div class="login-page__shell">
+			<ion-card class="login-card" >
+				<ion-card-header class="login-card__header">
+					<!-- <p class="login-card__eyebrow">DCS Volley</p> -->
+					<ion-card-title id="login-title" class="login-card__title">Zaloguj się</ion-card-title>
+				</ion-card-header>
+
+				<ion-card-content>
+					<form class="login-form" [formGroup]="loginForm">
+						<ion-item class="login-field" lines="none">
+							<ion-icon aria-hidden="true" slot="start" name="person-outline"></ion-icon>
+							<ion-input
+								label="E-mail"
+								labelPlacement="floating"
+								type="email"
+								autocomplete="email"
+								placeholder="Twoj adres e-mail"
+								formControlName="email"
+							></ion-input>
+						</ion-item>
+
+						<ion-item class="login-field" lines="none">
+							<ion-icon aria-hidden="true" slot="start" name="lock-closed-outline"></ion-icon>
+							<ion-input
+								label="Hasło"
+								labelPlacement="floating"
+								type="password"
+								autocomplete="current-password"
+								placeholder="Twoje hasło"
+								formControlName="password"
+							></ion-input>
+						</ion-item>
+
+						<div class="login-form__row">
+							<!-- <label class="login-form__remember" for="remember-me">
+								<input id="remember-me" name="rememberMe" type="checkbox" />
+								<span>Pamiętaj mnie</span>
+							</label> -->
+
+							<ion-button class="login-form__submit" expand="block" [disabled]="loginForm.invalid" (click)="test($event)">
+								Zaloguj się
+							</ion-button>
+						</div>
+					</form>
+				</ion-card-content>
+
+				<footer class="login-card__footer">
+					<p>Logowanie przeznaczone dla administratora. (to on liczy wyniki)</p>
+				</footer>
+			</ion-card>
+		</div>
+	</ion-content>
+</div>

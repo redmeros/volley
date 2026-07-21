@@ -5,14 +5,16 @@ import { addIcons } from 'ionicons';
 import { balloonOutline, personOutline } from 'ionicons/icons';
 import { MessageService } from './services/message.service';
 
-import { Color } from '@ionic/core';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  imports: [IonButtons, IonToolbar, IonHeader,
+  imports: [
+    IonButtons, 
+    IonToolbar, 
+    IonHeader,
     RouterLink,
     RouterLinkActive,
     IonApp,

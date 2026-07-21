@@ -22,8 +22,8 @@ type VApp struct {
 	Config  *config.VConfig
 	Pool    *pgxpool.Pool
 	Router  *graceful.Graceful
-	Api     *gin.RouterGroup
-	Modules map[string]interface{}
+	API     *gin.RouterGroup
+	Modules map[string]any
 }
 
 func (v *VApp) Run(ctx context.Context) error {
@@ -110,10 +110,10 @@ func NewVApp(config *config.VConfig) (*VApp, error) {
 	}))
 	v.Router = r
 
-	v.Api = v.Router.Group("/api")
+	v.API = v.Router.Group("/api")
 
-	v.Api.Use(gin.Recovery())
-	v.Api.Use(func(c *gin.Context) {
+	v.API.Use(gin.Recovery())
+	v.API.Use(func(c *gin.Context) {
 		c.Set(appKey{}, v)
 		c.Next()
 	})

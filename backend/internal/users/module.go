@@ -20,7 +20,7 @@ type UserModule struct {
 func NewUserModule(vapp *app.VApp) *UserModule {
 	return &UserModule{
 		vapp:  vapp,
-		group: vapp.Api.Group("/users"),
+		group: vapp.API.Group("/users"),
 	}
 }
 
@@ -35,13 +35,13 @@ func (m *UserModule) AuthenticateUser(ctx context.Context, email, password strin
 	var user User
 	err = conn.QueryRow(ctx, sql, email).Scan(&user.ID, &user.Username, &user.Email, &user.PasswordHash, &user.CreatedAt)
 	if err != nil {
-		return nil, fmt.Errorf("Error during fetching user: %w", err)
+		return nil, fmt.Errorf("error during fetching user: %w", err)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
 	if err != nil {
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
-			return nil, InvalidPasswordError
+			return nil, ErrInvalidPassword
 		}
 		return nil, err
 	}
@@ -73,10 +73,10 @@ func (m *UserModule) CreateNewUser(ctx context.Context, username, email, passwor
 	if err != nil {
 		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
 			if pgErr.Code == "23505" { // unique_violation
-				return nil, UserAlreadyExistsError
+				return nil, ErrUserAlreadyExists
 			}
 		}
-		return nil, fmt.Errorf("Error during inserting user: %w", err)
+		return nil, fmt.Errorf("error during inserting user: %w", err)
 	}
 
 	return user, nil

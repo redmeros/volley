@@ -57,11 +57,11 @@ func AuthMiddleware(a *app.VApp) gin.HandlerFunc {
 func GetClaimsFromContext(c *gin.Context) (*VolleyClaims, error) {
 	claimsStruct, ok := c.Get("claims")
 	if !ok {
-		return nil, UserNotAuthenticatedError
+		return nil, ErrUserNotAuthenticated
 	}
 	claims, ok := claimsStruct.(*VolleyClaims)
 	if !ok {
-		return nil, UserNotAuthenticatedError
+		return nil, ErrUserNotAuthenticated
 	}
 	return claims, nil
 }
@@ -96,7 +96,7 @@ func RegisterLoginHandler(a *app.VApp) {
 
 		user, err := userModule.AuthenticateUser(ctx, req.Email, req.Password)
 		if err != nil {
-			if errors.Is(err, UserNotFoundError) || errors.Is(err, InvalidPasswordError) {
+			if errors.Is(err, ErrUserNotFound) || errors.Is(err, ErrInvalidPassword) {
 				c.JSON(401, gin.H{"error": "invalid username or password"})
 				return
 			}
@@ -127,7 +127,7 @@ func RegisterNewUserHandler(a *app.VApp) {
 
 		user, err := userModule.CreateNewUser(ctx, req.Username, req.Email, req.Password)
 		if err != nil {
-			if errors.Is(err, UserAlreadyExistsError) {
+			if errors.Is(err, ErrUserAlreadyExists) {
 				c.JSON(400, gin.H{"error": err.Error()})
 				return
 			}
