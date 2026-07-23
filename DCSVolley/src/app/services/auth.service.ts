@@ -113,5 +113,13 @@ export class AuthService {
     const decoded = atob(data);
     return JSON.parse(decoded);
   }
+  
+  
+  logout() {
+      this.userSubject$.next(null);
+      this.tokenSubject$.next(null);
+      // localStorage.removeItem('user');
+      // localStorage.removeItem('token');
+  }
 }
 

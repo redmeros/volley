@@ -2,14 +2,15 @@ import { Component, inject, OnDestroy, OnInit, Signal, signal, WritableSignal } 
 import { AuthService, User } from "../services/auth.service";
 import { Subject, takeUntil } from "rxjs";
 import { JsonPipe } from "@angular/common";
-import { IonAvatar, IonChip, IonLabel } from "@ionic/angular/standalone";
+import { IonAvatar, IonChip, IonLabel, IonPopover, IonContent, IonList, IonItem } from "@ionic/angular/standalone";
+import { Router } from "@angular/router";
 
 @Component({
     selector: "app-userbar",
     template: `
         @if (user() !== null) {
             <div>
-                <ion-chip>
+                <ion-chip id="popover-userbar">
                     <ion-avatar>
                         <img src="https://ionicframework.com/docs/img/demos/avatar.svg" />
                     </ion-avatar>
@@ -17,6 +18,19 @@ import { IonAvatar, IonChip, IonLabel } from "@ionic/angular/standalone";
                         {{ user()?.email }}
                     </ion-label>
                 </ion-chip>
+                <ion-popover trigger="popover-userbar" side="bottom" alignment="center" [dismissOnSelect]="true">
+                    <ng-template>
+                        <ion-content>
+                            <ion-list>
+                                <ion-item [button]="true" [detail]="false" (click)="logoutClicked($event)">
+                                    <ion-label>
+                                        <h2>Wyloguj</h2>
+                                    </ion-label>
+                                </ion-item>
+                            </ion-list>
+                        </ion-content>
+                    </ng-template>
+                </ion-popover>
             </div>
         }
     `,
@@ -24,13 +38,18 @@ import { IonAvatar, IonChip, IonLabel } from "@ionic/angular/standalone";
     imports: [
     IonAvatar,
     IonChip,
-    IonLabel
+    IonLabel,
+    IonPopover,
+    IonContent,
+    IonList,
+    IonItem
 ],
 })
 export class UserbarComponent implements OnInit, OnDestroy {
     authService = inject(AuthService);
+    router = inject(Router);     
+
     destroy$ = new Subject<void>();
-    
     user: WritableSignal<User | null> = signal(null);
 
     constructor() {
@@ -48,5 +67,11 @@ export class UserbarComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
+    }
+    
+    logoutClicked(event: Event) {
+        // event.preventDefault();
+        this.authService.logout();
+        this.router.navigate(['/']);
     }
 }

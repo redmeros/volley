@@ -18,6 +18,7 @@ import { personOutline, lockClosedOutline } from "ionicons/icons";
 import { MessageService } from "../services/message.service";
 import { AuthService } from "../services/auth.service";
 import { finalize, first, Subject, takeUntil } from "rxjs";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-login",
@@ -41,6 +42,7 @@ export class LoginPage implements OnDestroy {
   messageSvc = inject(MessageService);
   authSvc = inject(AuthService);
   loadingCtrl = inject(LoadingController);
+  router = inject(Router);
   
   destroy$ = new Subject<void>();
 
@@ -78,6 +80,7 @@ export class LoginPage implements OnDestroy {
       ).subscribe({
         next: (token) => {
           console.log("Login successful, token received:", token);
+          this.router.navigate(['/']);
         },
         error: (err) => {
           this.messageSvc.newMessage("Login failed", "danger", 2000);
