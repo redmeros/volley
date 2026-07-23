@@ -109,7 +109,7 @@ func generateToken(user *User, app *app.VApp) (string, error) {
 		},
 		Email:   user.Email,
 		IsAdmin: false,
-		Role:    "user",
+		Role:    user.Role,
 	}
 
 	t.Claims = claims

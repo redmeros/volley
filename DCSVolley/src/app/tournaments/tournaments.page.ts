@@ -3,12 +3,13 @@ import { Tournament } from "../apiModels/tournament";
 import { TournamentsService } from "../services/tournaments.service";
 import { MessageService } from "../services/message.service";
 import { TournamentComponent } from "../components/tournament.component";
+import { IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from "@ionic/angular/standalone";
 
 @Component({
   selector: "app-tournaments",
   templateUrl: "./tournaments.page.html",
   styleUrls: ["./tournaments.page.scss"],
-  imports: [TournamentComponent],
+  imports: [IonCardContent, IonCardTitle, IonCardHeader, IonCard, TournamentComponent, IonContent],
 })
 export class TournamentsPage implements OnInit {
     

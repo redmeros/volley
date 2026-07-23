@@ -1,3 +1,15 @@
-@for (t of tournaments(); track $index) {
-  <app-tournament [model]="t"></app-tournament>  
-}
+<ion-content [fullscreen]="true">
+  @if (!tournaments || tournaments().length == 0) {
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Brak turniejów</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        Nie ma żadnych turniejów do wyświetlenia. 
+      </ion-card-content>
+    </ion-card>
+  }
+  @for (t of tournaments(); track $index) {
+    <app-tournament [model]="t"></app-tournament>
+  }
+</ion-content>

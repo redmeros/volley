@@ -6,6 +6,7 @@ import { ConfigService } from "./config.service";
 
 export interface User {
   id: number;
+  role: string;
   email: string
 }
 
@@ -88,6 +89,7 @@ export class AuthService {
       tap(({ data }: { data: TokenData; response: LoginResponse }) => {
         const user: User = {
           id: parseInt(data.sub),
+          role: data.role,
           email: email
         };
         this.userSubject$.next(user);

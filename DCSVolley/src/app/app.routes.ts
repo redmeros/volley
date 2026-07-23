@@ -1,10 +1,16 @@
 import { Routes } from '@angular/router';
+import { canActivateAdmin } from './admin/admin.guard';
 
 export const routes: Routes = [
   {
     path: '',
     redirectTo: 'tournaments',
     pathMatch: 'full',
+  },
+  {
+    path: "admin",
+    loadComponent: () => import("./admin/admin.page").then((m) => m.AdminPage),
+    canActivate: [canActivateAdmin],
   },
   {
     path: 'login',

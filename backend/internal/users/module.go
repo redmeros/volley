@@ -25,7 +25,7 @@ func NewUserModule(vapp *app.VApp) *UserModule {
 }
 
 func (m *UserModule) AuthenticateUser(ctx context.Context, email, password string) (*User, error) {
-	sql := `SELECT id, username, email, password_hash, created_at FROM users WHERE email = $1`
+	sql := `SELECT id, username, email, password_hash, created_at, role, is_admin FROM users WHERE email = $1`
 	conn, err := m.vapp.Pool.Acquire(ctx)
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func (m *UserModule) AuthenticateUser(ctx context.Context, email, password strin
 	defer conn.Release()
 
 	var user User
-	err = conn.QueryRow(ctx, sql, email).Scan(&user.ID, &user.Username, &user.Email, &user.PasswordHash, &user.CreatedAt)
+	err = conn.QueryRow(ctx, sql, email).Scan(&user.ID, &user.Username, &user.Email, &user.PasswordHash, &user.CreatedAt, &user.Role, &user.IsAdmin)
 	if err != nil {
 		return nil, fmt.Errorf("error during fetching user: %w", err)
 	}
@@ -59,6 +59,8 @@ func (m *UserModule) CreateNewUser(ctx context.Context, username, email, passwor
 		Username:     username,
 		Email:        email,
 		PasswordHash: string(hashedPassword),
+		Role:         "user",
+		IsAdmin:      false,
 		CreatedAt:    time.Now(),
 	}
 
