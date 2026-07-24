@@ -1,3 +1,23 @@
 <ion-content [fullscreen]="true">
-    admin
+    <ion-card>
+        <ion-card-header>
+            <ion-card-title>
+                <div class="title">
+                    <div>
+                        Turnieje
+                    </div>
+                    <div>
+                        <ion-button color="success" routerLink="/admin/tournament/new" (click)="addTournament($event)">
+                            <ion-icon slot="start" name="add-outline"></ion-icon>
+                            Dodaj
+                        </ion-button>
+                    </div>
+                </div>
+            </ion-card-title>
+
+        </ion-card-header>
+        <ion-card-content>
+
+        </ion-card-content>
+    </ion-card>
 </ion-content>

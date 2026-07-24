@@ -30,12 +30,11 @@ import { Router } from "@angular/router";
     IonCardContent,
     IonCardHeader,
     IonCardTitle,
-    IonContent,
     IonIcon,
     IonInput,
     IonItem,
-    ReactiveFormsModule,
-  ],
+    ReactiveFormsModule
+],
 })
 export class LoginPage implements OnDestroy {
 
