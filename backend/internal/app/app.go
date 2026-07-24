@@ -114,7 +114,7 @@ func NewVApp(config *config.VConfig) (*VApp, error) {
 		AllowMethods:  []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "QUERY"},
 		AllowHeaders:  []string{"Origin", "Content-Type", "Content-Length", "Authorization"},
 		ExposeHeaders: []string{"Content-Length"},
-		MaxAge:        12 * time.Hour,
+		MaxAge:        19 * time.Hour,
 	}))
 	v.Router = r
 
