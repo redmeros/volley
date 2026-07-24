@@ -95,6 +95,14 @@ func NewVApp(config *config.VConfig) (*VApp, error) {
 		Modules: make(map[string]any),
 	}
 
+	c, canc := context.WithTimeout(context.Background(), 1*time.Second)
+	defer canc()
+
+	err = v.Pool.Ping(c)
+	if err != nil {
+		return nil, fmt.Errorf("failed to ping database: %w", err)
+	}
+
 	r, err := graceful.Default()
 	if err != nil {
 		return nil, fmt.Errorf("failed to create router: %w", err)
