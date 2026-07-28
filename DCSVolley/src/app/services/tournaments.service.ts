@@ -20,5 +20,9 @@ export class TournamentsService {
                 })
             );
     }
+    
+    createTournament(tournament: Tournament): Observable<Tournament> {
+        return this.http.post<Tournament>(this.config.apiUrl + "/tournaments/", tournament);
+    }
 
 }

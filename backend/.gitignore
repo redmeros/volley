@@ -31,3 +31,6 @@
 
 bin/
 backend/bin
+
+tmp
+bin

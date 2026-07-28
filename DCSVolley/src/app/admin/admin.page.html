@@ -17,7 +17,9 @@
 
         </ion-card-header>
         <ion-card-content>
-
+            @for (tournament of availableTournaments() || []; track $index) {
+                <app-tournament [model]="tournament"></app-tournament>
+            }
         </ion-card-content>
     </ion-card>
 </ion-content>

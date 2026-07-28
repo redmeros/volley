@@ -33,7 +33,7 @@ import { Tournament } from "../apiModels/tournament";
 
                 <ion-item>
                     <ion-label for="startDate" class="wide-label">Data startu</ion-label>
-                    <ion-input slot="end" id="startDate" class="wide-label" formControlName="startDate" placeholder="YYYY-MM-DD"></ion-input>
+                    <ion-input slot="end" id="startDate" class="wide-label" formControlName="start_date" placeholder="YYYY-MM-DD"></ion-input>
                 </ion-item>
                 
                 <div class="validation-errors">
@@ -44,7 +44,7 @@ import { Tournament } from "../apiModels/tournament";
 
                 <ion-item>
                     <ion-label for="endDate" class="wide-label">Data zakończenia</ion-label>
-                    <ion-input slot="end" id="endDate" class="wide-label" formControlName="endDate" placeholder="YYYY-MM-DD"></ion-input>
+                    <ion-input slot="end" id="endDate" class="wide-label" formControlName="end_date" placeholder="YYYY-MM-DD"></ion-input>
                 </ion-item>
                 
                 <div class="validation-errors">
@@ -117,8 +117,8 @@ export class TournamentForm implements OnInit {
         id: new FormControl(''),
         name: new FormControl('nazwa testowa', [Validators.required]),
         description: new FormControl('testowy opis'),
-        startDate: new FormControl('2024-01-01', [Validators.required, Validators.pattern(/^\d{4}-\d{2}-\d{2}$/)]),
-        endDate: new FormControl('2024-01-02', [Validators.required, Validators.pattern(/^\d{4}-\d{2}-\d{2}$/)]),
+        start_date: new FormControl('2024-01-01', [Validators.required, Validators.pattern(/^\d{4}-\d{2}-\d{2}$/)]),
+        end_date: new FormControl('2024-01-02', [Validators.required, Validators.pattern(/^\d{4}-\d{2}-\d{2}$/)]),
     });
 
     ngOnInit(): void {
@@ -135,8 +135,8 @@ export class TournamentForm implements OnInit {
             id: `${t.id}`, 
             name: t.name ?? '', 
             description: t.description ?? '',
-            startDate: t.start_date ?? '',
-            endDate: t.end_date ?? ''
+            start_date: t.start_date ?? '',
+            end_date: t.end_date ?? ''
         });
     }
 

@@ -29,3 +29,6 @@
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
 
+tmp
+bin
+/backend/tmp/build-errors.log
