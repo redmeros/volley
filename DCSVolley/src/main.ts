@@ -5,7 +5,7 @@ import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalo
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { provideHttpClient, withInterceptors} from '@angular/common/http';
-import { tokenHandler as tokenInterceptor } from './app/services/token.interceptor';
+import { tokenInterceptor } from './app/services/token.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
