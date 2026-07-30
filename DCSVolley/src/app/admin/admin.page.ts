@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, signal, WritableSignal } from "@angular/core";
-import { IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonFab, IonIcon, IonFabButton, IonButton, ModalController } from "@ionic/angular/standalone";
+import { Component, inject, OnDestroy, OnInit, signal, WritableSignal } from "@angular/core";
+import { IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonFab, IonIcon, IonFabButton, IonButton, ModalController, IonList, IonItem, IonCardSubtitle } from "@ionic/angular/standalone";
 import { addIcons } from "ionicons";
 import { addOutline } from "ionicons/icons";
 import { TournamentForm } from "./tournament.form";
@@ -7,18 +7,47 @@ import { TournamentsService} from "../services/tournaments.service";
 import { MessageService } from "../services/message.service";
 import { Tournament } from "../apiModels/tournament";
 import { TournamentComponent } from "../components/tournament.component";
+import { first, Subject, takeUntil } from "rxjs";
+import { DatePipe } from "@angular/common";
 
 @Component({
     selector: 'app-admin',
     templateUrl: './admin.page.html',
-    imports: [IonIcon, IonCardContent, IonCardTitle, IonCardHeader, IonContent, IonCard, IonButton, TournamentComponent],
+    imports: [IonIcon, 
+        IonCardContent, IonCardTitle, IonCardHeader, IonContent, IonCard, IonButton, TournamentComponent, IonList, IonItem, IonCardSubtitle, DatePipe],
     styles: [`
-        div.title {
+        div.tournament-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .tournament-card {
+            flex: 1 0 21%;
+            max-width: 21%;
+            min-width: 200px;
+        }
+        .tournament-card-buttons {
             display: flex;
             justify-content: space-between;
-        }`]
+        }
+        // div.tournament-row {
+        //     min-width: 600px;
+        //     display: flex;
+        //     flex-direction: row;
+        //     justify-content: space-between;
+        //     align-items: center;
+        //     background-color: red;
+        // }
+        // div.min-w-400px {
+        //     min-width: 600px;
+        // }
+        // div.title {
+        //     display: flex;
+        //     justify-content: space-between;
+        // }
+        `]
 })
-export class AdminPage implements OnInit {
+export class AdminPage implements OnInit, OnDestroy {
     
     modalCtrl = inject(ModalController);
     tService = inject(TournamentsService);
@@ -26,12 +55,28 @@ export class AdminPage implements OnInit {
     
     availableTournaments: WritableSignal<Tournament[] | null> = signal(null);
     
+    destroy$ = new Subject<void>();
+    
     constructor() {
         addIcons({ addOutline });
     }
 
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
     ngOnInit(): void {
-        this.tService.getTournaments().subscribe({
+        this.updateTournaments();
+    }
+    
+    updateTournaments() {
+        this.tService.getTournaments()
+            .pipe(
+                first(),
+                takeUntil(this.destroy$)
+            )
+            .subscribe({
             next: (tournaments) => {
                 this.availableTournaments.set(tournaments);
             },
@@ -59,6 +104,7 @@ export class AdminPage implements OnInit {
         this.tService.createTournament(data).subscribe({
             next: (tournament) => {
                 console.log('Tournament created successfully:', tournament);
+                this.updateTournaments();
             },
             error: (err) => {
                 this.messageService.newMessage(`Failed to create tournament ${err.error.error}`, "danger", 2000);

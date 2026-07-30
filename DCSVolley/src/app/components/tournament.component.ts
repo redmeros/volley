@@ -15,7 +15,13 @@ import { DatePipe } from "@angular/common";
 </div> 
     </div>
   `,
+  host: {
+    'class.w-100': 'true',
+  },
   styles: [`
+    .w-100 {
+        width: 100%;
+    }
     .muted {
         color: #888;
         font-style: italic;

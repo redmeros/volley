@@ -1,10 +1,11 @@
 
 [base]
-BaseURL="http://localhost:8080"
-Debug=true
-JWTSecret="asddfna@#$kopsdfapo425j3po4jqqrnklqwnafsoudyn9yrqw8r923h5iio11ooqwhef98sdydfa9shdfaoumdfh9845985rhqhwefoiahe89sdvyu98w"
-JWTExpiration=3600
-JWTIssuer="volley-backend"
+BaseURL = "http://localhost:8080"
+Debug = true
+JWTSecret = "asddfna@#$kopsdfapo425j3po4jqqrnklqwnafsoudyn9yrqw8r923h5iio11ooqwhef98sdydfa9shdfaoumdfh9845985rhqhwefoiahe89sdvyu98w"
+JWTExpiration = 3600
+JWTIssuer = "volley-backend"
 
 [database]
-PostgresDSN="postgres://myuser:mypassword@localhost:5432/mydatabase?sslmode=disable"
+PostgresDSN = "postgres://myuser:mypassword@localhost:5432/mydatabase?sslmode=disable"
+
