@@ -9,6 +9,7 @@ import { Tournament } from "../apiModels/tournament";
 import { TournamentComponent } from "../components/tournament.component";
 import { first, Subject, takeUntil } from "rxjs";
 import { DatePipe } from "@angular/common";
+import { Router } from "@angular/router";
 
 @Component({
     selector: 'app-admin',
@@ -34,13 +35,11 @@ import { DatePipe } from "@angular/common";
 })
 export class AdminPage implements OnInit, OnDestroy {
 
-    editTournament(tournament: Tournament, $event: PointerEvent) {
-        throw new Error('Method not implemented.');
-    }
     
     modalCtrl = inject(ModalController);
     tService = inject(TournamentsService);
     messageService = inject(MessageService);
+    router = inject(Router);
     
     availableTournaments: WritableSignal<Tournament[] | null> = signal(null);
     
@@ -57,6 +56,10 @@ export class AdminPage implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.updateTournaments();
+    }
+    
+    editTournament(tournament: Tournament, $event: PointerEvent) {
+        this.router.navigate(['/admin/tournament', tournament.id]);
     }
     
     updateTournaments() {

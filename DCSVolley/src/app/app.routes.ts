@@ -13,6 +13,12 @@ export const routes: Routes = [
     canActivate: [canActivateAdmin],
   },
   {
+    path: "admin/tournament/:id",
+    loadComponent: () =>
+      import("./admin/tournament.page").then((m) => m.TournamentPage),
+    canActivate: [canActivateAdmin],
+  },
+  {
     path: 'login',
     loadComponent: () =>
       import('./auth/login.page').then((m) => m.LoginPage),
