@@ -2,6 +2,8 @@ package tournaments
 
 import (
 	"context"
+	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -19,8 +21,11 @@ func RegisterTournamentsHandlers(a *app.VApp) {
 
 	a.Modules[moduleName] = module
 
+	authMiddleware := users.AuthMiddleware(a)
+
 	module.tournamentGroup.GET("/", listTournaments)
-	module.tournamentGroup.POST("/", users.AuthMiddleware(a), createTournament)
+	module.tournamentGroup.POST("/", authMiddleware, createTournament)
+	module.tournamentGroup.DELETE("/:id", authMiddleware, deleteTournament)
 }
 
 func getTournamentModule(a *app.VApp) *TournamentModule {
@@ -33,6 +38,48 @@ func getTournamentModule(a *app.VApp) *TournamentModule {
 		panic("tournament module has wrong type")
 	}
 	return tournamentModule
+}
+
+func deleteTournament(c *gin.Context) {
+	tournamentID := c.Param("id")
+	if len(tournamentID) == 0 {
+		c.JSON(400, gin.H{"error": "No tournament ID provided"})
+		return
+	}
+
+	id, err := strconv.Atoi(tournamentID)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Wrong id format"})
+		return
+	}
+
+	app := app.GetAppFromContext(c)
+	module := getTournamentModule(app)
+	claims, err := users.GetClaimsFromContext(c)
+	if err != nil {
+		c.JSON(401, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
+	defer cancel()
+
+	if claims.Role != "admin" {
+		c.JSON(403, gin.H{"error": "only admin users can delete tournaments"})
+		return
+	}
+
+	userID, err := claims.GetUserID()
+	if err != nil {
+		c.JSON(500, gin.H{"error": "failed to get user ID from claims"})
+		return
+	}
+	err = module.DeleteTournament(ctx, id, userID)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+	c.Status(http.StatusNoContent)
 }
 
 func createTournament(c *gin.Context) {

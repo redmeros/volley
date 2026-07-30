@@ -71,3 +71,18 @@ func (m *TournamentModule) CreateTournament(ctx context.Context, name string, de
 		CreatedBy:   createdBy,
 	}, nil
 }
+
+func (m *TournamentModule) DeleteTournament(ctx context.Context, id int, userID int) error {
+	conn, err := m.vapp.Pool.Acquire(ctx)
+	if err != nil {
+		return err
+	}
+	defer conn.Release()
+
+	sql := `DELETE FROM tournament WHERE id = $1 AND created_by = $2`
+	_, err = conn.Exec(ctx, sql, id, userID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

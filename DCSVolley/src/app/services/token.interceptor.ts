@@ -7,16 +7,17 @@ import { MessageService } from './message.service';
 
 
 interface TokenEndpoint {
-    pattern: string;
+    pattern: string | RegExp;
     method: string;
 }
 
 const tokenEndpoints: TokenEndpoint[] = [
-    { pattern: '\/api\/tournaments\/?', method: 'POST' },
+    { pattern: /\/api\/tournaments\/?/, method: 'POST' },
+    { pattern: /\/api\/tournaments\/\d+\/?/, method: 'DELETE' },
 ];
 
 function isMatch(endpoint: TokenEndpoint, method: string, url: string): boolean {
-    const regex = new RegExp(endpoint.pattern);
+    const regex = endpoint.pattern instanceof RegExp ? endpoint.pattern : new RegExp(endpoint.pattern);
     return endpoint.method.toLowerCase() === method.toLowerCase() && regex.test(url);
 }
 
@@ -46,6 +47,8 @@ export function tokenInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn)
                 });
                 return next(clonedReq);
             }
+            
+            console.log(`Request to ${req.url} with method ${req.method} does not require a token.`);
             return next(req);
         })
     )

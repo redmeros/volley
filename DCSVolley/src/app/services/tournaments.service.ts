@@ -7,9 +7,7 @@ import { HttpClient } from "@angular/common/http";
 @Injectable({
 providedIn: 'root'})
 export class TournamentsService {
-    deleteTournament(id: number): Observable<void> {
-        throw new Error("Method not implemented.");
-    }
+
 
     private config = inject(ConfigService)
     private http = inject(HttpClient)
@@ -26,6 +24,10 @@ export class TournamentsService {
     
     createTournament(tournament: Tournament): Observable<Tournament> {
         return this.http.post<Tournament>(this.config.apiUrl + "/tournaments/", tournament);
+    }
+    
+    deleteTournament(id: number): Observable<void> {
+        return this.http.delete<void>(this.config.apiUrl + `/tournaments/${id}`);
     }
 
 }
