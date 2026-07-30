@@ -7,10 +7,11 @@
 				</ion-card-header>
 
 				<ion-card-content>
-					<form class="login-form" [formGroup]="loginForm">
+					<form class="login-form" [formGroup]="loginForm" (ngSubmit)="formSubmit($event)">
 						<ion-item class="login-field" lines="none">
 							<ion-icon aria-hidden="true" slot="start" name="person-outline"></ion-icon>
 							<ion-input
+								#emailInput
 								label="E-mail"
 								labelPlacement="floating"
 								type="email"
@@ -38,7 +39,7 @@
 								<span>Pamiętaj mnie</span>
 							</label> -->
 
-							<ion-button class="login-form__submit" expand="block" [disabled]="loginForm.invalid" (click)="test($event)">
+							<ion-button class="login-form__submit" type="submit" expand="block" [disabled]="loginForm.invalid" (click)="formSubmit($event)">
 								Zaloguj się
 							</ion-button>
 						</div>

@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy } from "@angular/core";
+import { AfterViewInit, Component, inject, OnDestroy, ViewChild } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import {
   IonButton,
@@ -36,18 +36,19 @@ import { Router } from "@angular/router";
     ReactiveFormsModule
 ],
 })
-export class LoginPage implements OnDestroy {
+export class LoginPage implements AfterViewInit, OnDestroy {
 
   messageSvc = inject(MessageService);
   authSvc = inject(AuthService);
   loadingCtrl = inject(LoadingController);
   router = inject(Router);
-  
+
+  @ViewChild("emailInput") emailInput?: IonInput;
   destroy$ = new Subject<void>();
 
   loginForm = new FormGroup({
-    email: new FormControl("", [Validators.email, Validators.required]),
-    password: new FormControl("", Validators.required),
+    email: new FormControl("redmer@olired.net", [Validators.email, Validators.required]),
+    password: new FormControl("mysimplepassword", Validators.required),
   });
 
   constructor() {
@@ -55,12 +56,26 @@ export class LoginPage implements OnDestroy {
     addIcons({ lockClosedOutline });
   }
 
+  ngAfterViewInit(): void {
+    this.focusEmailField();
+  }
+
+  ionViewDidEnter(): void {
+    this.focusEmailField();
+  }
+
+  private focusEmailField(): void {
+    setTimeout(() => {
+      this.emailInput?.setFocus();
+    }, 150);
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  async test(event: Event) {
+  async formSubmit(event: Event) {
     event.preventDefault();
     const loading = await this.loadingCtrl.create({
       message: "Logging in...",
@@ -79,7 +94,7 @@ export class LoginPage implements OnDestroy {
       ).subscribe({
         next: (token) => {
           console.log("Login successful, token received:", token);
-          this.router.navigate(['/']);
+          this.router.navigate(['/admin']);
         },
         error: (err) => {
           this.messageSvc.newMessage("Login failed", "danger", 2000);
