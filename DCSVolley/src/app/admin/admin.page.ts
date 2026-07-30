@@ -13,8 +13,8 @@ import { DatePipe } from "@angular/common";
 @Component({
     selector: 'app-admin',
     templateUrl: './admin.page.html',
-    imports: [IonIcon, 
-        IonCardContent, IonCardTitle, IonCardHeader, IonContent, IonCard, IonButton, TournamentComponent, IonList, IonItem, IonCardSubtitle, DatePipe],
+    imports: [IonIcon,
+    IonCardContent, IonCardTitle, IonCardHeader, IonContent, IonCard, IonButton, IonCardSubtitle, DatePipe],
     styles: [`
         div.tournament-cards {
             display: flex;
@@ -30,24 +30,13 @@ import { DatePipe } from "@angular/common";
             display: flex;
             justify-content: space-between;
         }
-        // div.tournament-row {
-        //     min-width: 600px;
-        //     display: flex;
-        //     flex-direction: row;
-        //     justify-content: space-between;
-        //     align-items: center;
-        //     background-color: red;
-        // }
-        // div.min-w-400px {
-        //     min-width: 600px;
-        // }
-        // div.title {
-        //     display: flex;
-        //     justify-content: space-between;
-        // }
         `]
 })
 export class AdminPage implements OnInit, OnDestroy {
+
+    editTournament(tournament: Tournament, $event: PointerEvent) {
+        throw new Error('Method not implemented.');
+    }
     
     modalCtrl = inject(ModalController);
     tService = inject(TournamentsService);
@@ -83,6 +72,31 @@ export class AdminPage implements OnInit, OnDestroy {
             error: (err) => {
                 this.messageService.newMessage("Failed to fetch tournaments", "danger", 2000);
                 console.error("Failed to fetch tournaments:", err);
+            }
+        });
+    }
+    
+    async removeTournament(tournament: Tournament, $event: PointerEvent) {
+        $event.stopPropagation();
+        const confirmed = await this.messageService.confirm({
+            message: `Jesteś pewny że chcesz usunąć ten turniej? "${tournament.name}", \n pamiętaj że ta operacja jest nieodwracalna?`,
+            acceptBtnColor: "danger",
+            acceptBtnTxt: "Tak, usuń",
+            declineBtnColor: "primary",
+            declineBtnTxt: "Nie, anuluj"
+        });
+        if (!confirmed) {
+            return;
+        }
+        
+        this.tService.deleteTournament(tournament.id).subscribe({
+            next: () => {
+                this.messageService.newMessage(`Tournament "${tournament.name}" deleted successfully`, "success", 2000);
+                this.updateTournaments();
+            },
+            error: (err) => {
+                this.messageService.newMessage(`Failed to delete tournament "${tournament.name}": ${err.error.error}`, "danger", 2000);
+                console.error('Failed to delete tournament:', err);
             }
         });
     }

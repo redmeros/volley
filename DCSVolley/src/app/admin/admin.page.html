@@ -34,27 +34,18 @@
                     </ion-card-content>
 
                     <div class="tournament-card-buttons">
-                        <ion-button fill="clear" color="danger">
-                        <ion-icon slot="start" name="trash-outline"></ion-icon>
-                        Usuń</ion-button>
-                        <ion-button fill="clear">
+                        <ion-button fill="clear" color="danger" (click)="removeTournament(tournament, $event)">
+                            <ion-icon slot="start" name="trash-outline"></ion-icon>
+                            Usuń
+                        </ion-button>
+                        <ion-button fill="clear" (click)="editTournament(tournament, $event)">
                             <ion-icon slot="start" name="create-outline"></ion-icon>
-                            Edytuj</ion-button>
+                            Edytuj
+                        </ion-button>
                     </div>
                 </ion-card>
             }
             </div>
-            <!-- <ion-list lines="full"> 
-                @for (tournament of availableTournaments() || []; track $index) {
-                    <ion-item class="">
-                        <div class="min-w-400px">
-                        <a routerLink="/admin/tournament/">
-                            <app-tournament class="min-w-400px" [model]="tournament"></app-tournament>
-                        </a>
-                        </div>
-                    </ion-item>
-                }
-            </ion-list> -->
         </ion-card-content>
         
     </ion-card>

@@ -7,6 +7,9 @@ import { HttpClient } from "@angular/common/http";
 @Injectable({
 providedIn: 'root'})
 export class TournamentsService {
+    deleteTournament(id: number): Observable<void> {
+        throw new Error("Method not implemented.");
+    }
 
     private config = inject(ConfigService)
     private http = inject(HttpClient)
