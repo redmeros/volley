@@ -14,6 +14,7 @@ interface TokenEndpoint {
 const tokenEndpoints: TokenEndpoint[] = [
     { pattern: /\/api\/tournaments\/?/, method: 'POST' },
     { pattern: /\/api\/tournaments\/\d+\/?/, method: 'DELETE' },
+    { pattern: /\/api\/tournaments\/\d+\/?/, method: 'PUT' },
 ];
 
 function isMatch(endpoint: TokenEndpoint, method: string, url: string): boolean {
