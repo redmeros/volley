@@ -7,6 +7,9 @@ import { HttpClient } from "@angular/common/http";
 @Injectable({
 providedIn: 'root'})
 export class TournamentsService {
+    updateTournament(updatedTournament: Tournament): Observable<Tournament> {
+        return this.http.put<Tournament>(this.config.apiUrl + `/tournaments/${updatedTournament.id}`, updatedTournament);
+    }
 
 
     private config = inject(ConfigService)

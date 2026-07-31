@@ -1,3 +1,15 @@
 <div>
-    {{ tournament()?.name }}
+    <form (ngSubmit)="onSubmit($event)" [formGroup]="form">
+        <ion-input class="ion-margin-bottom" label="Nazwa turnieju" label-placement="stacked" formControlName="name"
+            type="text" fill="outline"></ion-input>
+        <ion-textarea [autoGrow]="true" class="ion-margin-bottom" label="Opis" label-placement="stacked"
+            formControlName="description" fill="outline"></ion-textarea>
+        <ion-input class="ion-margin-bottom" label="Data rozpoczęcia" label-placement="stacked"
+            formControlName="start_date" fill="outline"></ion-input>
+        <ion-input class="ion-margin-bottom" label="Data zakończenia" label-placement="stacked" formControlName="end_date"
+            fill="outline"></ion-input>
+
+
+        <ion-button type="submit" expand="block" class="ion-margin-top" [disabled]="form.invalid || form.pristine">Zapisz</ion-button>
+    </form>
 </div>
