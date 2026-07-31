@@ -49,6 +49,22 @@ func (m *TournamentModule) GetTournaments(ctx context.Context) ([]*Tournament, e
 	return tournaments, nil
 }
 
+func (m *TournamentModule) GetTournament(ctx context.Context, id int) (*Tournament, error) {
+	conn, err := m.vapp.Pool.Acquire(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Release()
+
+	sql := `SELECT id, name, description, start_date, end_date, created_by FROM tournament WHERE id = $1`
+	var t Tournament
+	err = conn.QueryRow(ctx, sql, id).Scan(&t.ID, &t.Name, &t.Description, &t.StartDate, &t.EndDate, &t.CreatedBy)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
 func (m *TournamentModule) CreateTournament(ctx context.Context, name string, description string, startDate time.Time, endDate time.Time, createdBy int) (*Tournament, error) {
 	conn, err := m.vapp.Pool.Acquire(ctx)
 	if err != nil {

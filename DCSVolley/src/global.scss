@@ -64,3 +64,25 @@ button.alert-button.alert-button-danger {
     --background: var(--ion-color-secondary);
     --color: var(--ion-color-secondary-contrast);
 }
+
+/* Reusable page container: full width on small screens, constrained on large screens. */
+.container {
+    width: 100%;
+    max-width: var(--app-container-max-width, 1200px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--ion-padding, 16px);
+    padding-right: var(--ion-padding, 16px);
+    box-sizing: border-box;
+}
+
+/* If the class is applied directly on ion-content, center its internal scroll area. */
+ion-content.container::part(scroll) {
+    width: 100%;
+    max-width: var(--app-container-max-width, 1200px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--ion-padding, 16px);
+    padding-right: var(--ion-padding, 16px);
+    box-sizing: border-box;
+}

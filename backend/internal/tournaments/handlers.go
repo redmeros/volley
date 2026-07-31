@@ -26,6 +26,30 @@ func RegisterTournamentsHandlers(a *app.VApp) {
 	module.tournamentGroup.GET("/", listTournaments)
 	module.tournamentGroup.POST("/", authMiddleware, createTournament)
 	module.tournamentGroup.DELETE("/:id", authMiddleware, deleteTournament)
+	module.tournamentGroup.GET("/:id", getTournament)
+}
+
+func getTournament(c *gin.Context) {
+	idstr, ok := c.Params.Get("id")
+	if !ok {
+		c.JSON(400, gin.H{"error": "No tournament ID provided"})
+		return
+	}
+	id, err := strconv.Atoi(idstr)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Wrong id format"})
+		return
+	}
+	a := app.GetAppFromContext(c)
+	m := getTournamentModule(a)
+
+	tournament, err := m.GetTournament(c, id)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, tournament)
 }
 
 func getTournamentModule(a *app.VApp) *TournamentModule {

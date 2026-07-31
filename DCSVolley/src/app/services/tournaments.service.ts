@@ -29,5 +29,8 @@ export class TournamentsService {
     deleteTournament(id: number): Observable<void> {
         return this.http.delete<void>(this.config.apiUrl + `/tournaments/${id}`);
     }
-
+    
+    getTournament(id: number): Observable<Tournament> {
+        return this.http.get<Tournament>(this.config.apiUrl + `/tournaments/${id}`);
+    }
 }
