@@ -27,6 +27,7 @@ func RegisterTournamentsHandlers(a *app.VApp) {
 	module.tournamentGroup.POST("/", authMiddleware, createTournament)
 	module.tournamentGroup.DELETE("/:id", authMiddleware, deleteTournament)
 	module.tournamentGroup.GET("/:id", getTournament)
+	module.tournamentGroup.PUT("/:id", authMiddleware, putTournament)
 }
 
 func getTournament(c *gin.Context) {
@@ -104,6 +105,57 @@ func deleteTournament(c *gin.Context) {
 		return
 	}
 	c.Status(http.StatusNoContent)
+}
+
+func putTournament(c *gin.Context) {
+	tournamentIDstring := c.Param("id")
+	if len(tournamentIDstring) == 0 {
+		c.JSON(400, gin.H{"error": "No tournament ID provided"})
+		return
+	}
+
+	id, err := strconv.Atoi(tournamentIDstring)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Wrong id format"})
+		return
+	}
+
+	app := app.GetAppFromContext(c)
+	module := getTournamentModule(app)
+	claims, err := users.GetClaimsFromContext(c)
+	if err != nil {
+		c.JSON(401, gin.H{"error": err.Error()})
+		return
+	}
+
+	if claims.Role != "admin" {
+		c.JSON(403, gin.H{"error": "only admin users can update tournaments"})
+		return
+	}
+
+	userID, err := claims.GetUserID()
+	if err != nil {
+		c.JSON(500, gin.H{"error": "failed to get user ID from claims"})
+		return
+	}
+
+	tournament := &Tournament{}
+	err = c.ShouldBindJSON(tournament)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	if id != tournament.ID {
+		c.JSON(400, gin.H{"error": "Tournament ID in URL does not match ID in request body"})
+		return
+	}
+
+	err = module.UpdateTournament(c, tournament, userID)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
 }
 
 func createTournament(c *gin.Context) {

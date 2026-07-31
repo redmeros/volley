@@ -65,6 +65,22 @@ func (m *TournamentModule) GetTournament(ctx context.Context, id int) (*Tourname
 	return &t, nil
 }
 
+func (m *TournamentModule) UpdateTournament(ctx context.Context, tournament *Tournament, userID int) error {
+	conn, err := m.vapp.Pool.Acquire(ctx)
+	if err != nil {
+		return err
+	}
+	defer conn.Release()
+
+	sql := "UPDATE tournament SET name = $1, description = $2, start_date = $3, end_date = $4 WHERE id = $5"
+	_, err = conn.Exec(ctx, sql, tournament.Name, tournament.Description, tournament.StartDate, tournament.EndDate, tournament.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *TournamentModule) CreateTournament(ctx context.Context, name string, description string, startDate time.Time, endDate time.Time, createdBy int) (*Tournament, error) {
 	conn, err := m.vapp.Pool.Acquire(ctx)
 	if err != nil {

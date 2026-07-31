@@ -1,1 +1,1 @@
-asdf
+# Appka do ogarnięcia turnieju
