@@ -28,7 +28,7 @@ func (m *TournamentModule) GetTournaments(ctx context.Context) ([]*Tournament, e
 	}
 	defer conn.Release()
 
-	sql := `SELECT id, name, start_date, end_date FROM tournament`
+	sql := `SELECT id, name, start_date, end_date, description FROM tournament`
 	q, err := conn.Query(ctx, sql)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (m *TournamentModule) GetTournaments(ctx context.Context) ([]*Tournament, e
 	var tournaments []*Tournament
 	for q.Next() {
 		var t Tournament
-		if err := q.Scan(&t.ID, &t.Name, &t.StartDate, &t.EndDate); err != nil {
+		if err := q.Scan(&t.ID, &t.Name, &t.StartDate, &t.EndDate, &t.Description); err != nil {
 			return nil, err
 		}
 		tournaments = append(tournaments, &t)

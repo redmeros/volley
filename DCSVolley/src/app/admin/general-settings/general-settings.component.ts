@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, effect, inject, input, OnDestroy, OnInit } from "@angular/core";
+import { Component, effect, inject, input, OnDestroy } from "@angular/core";
 import { Tournament } from "../../apiModels/tournament";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { AdminTournamentsStore, TournamentsService } from "../../services/tournaments.service";
+import { AdminTournamentsStore } from "../../services/tournaments.service";
 import { Subject } from "rxjs";
-import { IonList, IonItem, IonLabel, IonInput, IonButton, IonText, IonTextarea, LoadingController } from "@ionic/angular/standalone";
+import { IonInput, IonButton, IonTextarea } from "@ionic/angular/standalone";
 import { MessageService } from "../../services/message.service";
 
 @Component({
@@ -20,9 +20,7 @@ import { MessageService } from "../../services/message.service";
 export class GeneralSettingsComponent implements OnDestroy {
 
     tournament = input<Tournament>();
-    // tournamentService = inject(TournamentsService);
     tStore = inject(AdminTournamentsStore);
-    // loadingCtrl = inject(LoadingController);
     messagesService = inject(MessageService);
 
     $destroy = new Subject<void>();
