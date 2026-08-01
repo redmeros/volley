@@ -1,13 +1,12 @@
 import { Component, effect, inject, OnDestroy, OnInit, signal, Signal } from "@angular/core";
-import { IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonFab, IonIcon, IonFabButton, IonButton, ModalController, IonList, IonItem, IonCardSubtitle, LoadingController } from "@ionic/angular/standalone";
+import { IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonIcon, IonButton, ModalController, IonCardSubtitle, LoadingController } from "@ionic/angular/standalone";
 import { addIcons } from "ionicons";
 import { addOutline } from "ionicons/icons";
 import { TournamentForm } from "./tournament.form";
-import { AdminTournamentsStore, TournamentsService } from "../services/tournaments.service";
+import { AdminTournamentsStore } from "../services/tournaments.service";
 import { MessageService } from "../services/message.service";
 import { Tournament } from "../apiModels/tournament";
-import { TournamentComponent } from "../components/tournament.component";
-import { first, Subject, takeUntil } from "rxjs";
+import { Subject } from "rxjs";
 import { DatePipe } from "@angular/common";
 import { Router } from "@angular/router";
 
@@ -35,7 +34,6 @@ import { Router } from "@angular/router";
 })
 export class AdminPage implements OnInit, OnDestroy {
 
-
     modalCtrl = inject(ModalController);
     messageService = inject(MessageService);
     router = inject(Router);
@@ -49,23 +47,6 @@ export class AdminPage implements OnInit, OnDestroy {
 
     constructor() {
         addIcons({ addOutline });
-        
-        effect(async () => {
-            const loading = this.tStore.isLoading();
-            if (loading) {
-                const ctrl = await this.loadingCtrl.create({
-                    message: 'Loading...',
-                });
-                await ctrl.present();
-            } 
-        });
-        
-        effect(async () => {
-            const loading = this.tStore.isLoading();
-            if (!loading) {
-                await this.loadingCtrl.dismiss();
-            }
-        });
     }
 
     ngOnDestroy(): void {

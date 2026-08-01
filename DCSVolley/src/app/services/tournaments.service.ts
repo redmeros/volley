@@ -90,6 +90,13 @@ export const AdminTournamentsStore = signalStore(
             const createdTournament = await firstValueFrom(tournamentService.createTournament(tournament));
             patchState(store, { isLoading: false }, upsertEntity(createdTournament));
             return createdTournament;
+        },
+
+        async updateTournament(tournament: Tournament) {
+            patchState(store, { isLoading: true });
+            const updatedTournament = await firstValueFrom(tournamentService.updateTournament(tournament));
+            patchState(store, { isLoading: false }, upsertEntity(updatedTournament));
+            return updatedTournament;
         }
 
     }))
