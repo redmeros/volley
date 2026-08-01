@@ -93,6 +93,13 @@ export class GeneralSettingsComponent implements OnDestroy {
 
         this.tournamentService.updateTournament(updatedTournament).subscribe({
             next: (updated) => {
+                this.tournament()!.created_at = updated.created_at;
+                this.tournament()!.created_by = updated.created_by;
+                this.tournament()!.name = updated.name;
+                this.tournament()!.description = updated.description;
+                this.tournament()!.start_date = updated.start_date;
+                this.tournament()!.end_date = updated.end_date;
+
                 this.messagesService.newMessage("Zmiany zostały zapisane.", "success", 2000);
             },
             error: (err) => {

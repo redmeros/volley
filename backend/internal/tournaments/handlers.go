@@ -2,8 +2,10 @@ package tournaments
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -13,6 +15,69 @@ import (
 )
 
 const moduleName = "tournaments"
+
+type tournamentRequest struct {
+	CreatedAt   string `json:"created_at"`
+	CreatedBy   int    `json:"created_by"`
+	Description string `json:"description"`
+	EndDate     string `json:"end_date"`
+	StartDate   string `json:"start_date"`
+	Name        string `json:"name"`
+	ID          int    `json:"id"`
+}
+
+// YYYY-MM-DD
+func tryParseISODate(dateStr string) (time.Time, error) {
+	if len(dateStr) < 10 {
+		return time.Time{}, fmt.Errorf("date string too short")
+	}
+	cells := strings.Split(dateStr, "-")
+	if len(cells) < 3 {
+		return time.Time{}, fmt.Errorf("date string does not have enough components")
+	}
+
+	year, err := strconv.Atoi(cells[0])
+	if err != nil {
+		return time.Time{}, fmt.Errorf("invalid year: %v", err)
+	}
+	month, err := strconv.Atoi(cells[1])
+	if err != nil {
+		return time.Time{}, fmt.Errorf("invalid month: %v", err)
+	}
+	day, err := strconv.Atoi(cells[2])
+	if err != nil {
+		return time.Time{}, fmt.Errorf("invalid day: %v", err)
+	}
+
+	return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC), nil
+}
+
+func (t *tournamentRequest) ToTournament() (*Tournament, error) {
+	te := &Tournament{
+		ID:          t.ID,
+		Name:        t.Name,
+		Description: t.Description,
+		CreatedBy:   t.CreatedBy,
+	}
+
+	startDate, err := tryParseISODate(t.StartDate)
+	if err != nil {
+		return nil, fmt.Errorf("invalid start date: %w", err)
+	}
+
+	endDate, err := tryParseISODate(t.EndDate)
+	if err != nil {
+		return nil, fmt.Errorf("invalid end date: %w", err)
+	}
+
+	createdAt, _ := tryParseISODate(t.CreatedAt)
+
+	te.StartDate = startDate
+	te.EndDate = endDate
+	te.CreatedAt = createdAt
+
+	return te, nil
+}
 
 func RegisterTournamentsHandlers(a *app.VApp) {
 	pterm.Info.Printfln("Registering tournaments handlers")
@@ -139,15 +204,21 @@ func putTournament(c *gin.Context) {
 		return
 	}
 
-	tournament := &Tournament{}
-	err = c.ShouldBindJSON(tournament)
+	tournamentReq := &tournamentRequest{}
+	err = c.ShouldBindJSON(tournamentReq)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
-	if id != tournament.ID {
+	if id != tournamentReq.ID {
 		c.JSON(400, gin.H{"error": "Tournament ID in URL does not match ID in request body"})
+		return
+	}
+
+	tournament, err := tournamentReq.ToTournament()
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -156,6 +227,8 @@ func putTournament(c *gin.Context) {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	c.JSON(200, tournament)
 }
 
 func createTournament(c *gin.Context) {
