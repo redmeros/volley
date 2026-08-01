@@ -6,6 +6,7 @@ import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { provideHttpClient, withInterceptors} from '@angular/common/http';
 import { tokenInterceptor } from './app/services/token.interceptor';
+import { AdminTournamentsStore } from './app/services/tournaments.service';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -15,6 +16,10 @@ bootstrapApplication(AppComponent, {
       tokenInterceptor      
     ])),
     provideRouter(routes, withPreloading(PreloadAllModules)),
+    // {
+    //   provide: AdminTournamentsStore,
+    //   useValue: AdminTournamentsStore,
+    // }
 
   ],
 });

@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit, signal, WritableSignal } from '@a
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { IonApp, IonSplitPane, IonMenu, IonContent, IonList, IonListHeader, IonNote, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterOutlet, IonRouterLink, IonToast, ToastController, IonButton, IonHeader, IonToolbar, IonTitle, IonButtons, IonMenuButton, IonAvatar, IonItemDivider } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { balloonOutline, basketballOutline, calendarOutline, createOutline, personOutline, settingsOutline, trashOutline, trophyOutline } from 'ionicons/icons';
+import { balloonOutline, basketballOutline, calendarOutline, createOutline, personOutline, playOutline, settingsOutline, trashOutline, trophyOutline } from 'ionicons/icons';
 import { MessageService } from './services/message.service';
 
 import { Subject, takeUntil } from 'rxjs';
@@ -55,6 +55,7 @@ export class AppComponent implements OnInit, OnDestroy {
       trophyOutline,
       calendarOutline,
       basketballOutline,
+      playOutline,
     });
   }
 

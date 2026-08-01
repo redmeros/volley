@@ -1,9 +1,9 @@
-import { Component, inject, OnDestroy, OnInit, signal, WritableSignal } from "@angular/core";
-import { IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonFab, IonIcon, IonFabButton, IonButton, ModalController, IonList, IonItem, IonCardSubtitle } from "@ionic/angular/standalone";
+import { Component, effect, inject, OnDestroy, OnInit, signal, Signal } from "@angular/core";
+import { IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonFab, IonIcon, IonFabButton, IonButton, ModalController, IonList, IonItem, IonCardSubtitle, LoadingController } from "@ionic/angular/standalone";
 import { addIcons } from "ionicons";
 import { addOutline } from "ionicons/icons";
 import { TournamentForm } from "./tournament.form";
-import { TournamentsService} from "../services/tournaments.service";
+import { AdminTournamentsStore, TournamentsService } from "../services/tournaments.service";
 import { MessageService } from "../services/message.service";
 import { Tournament } from "../apiModels/tournament";
 import { TournamentComponent } from "../components/tournament.component";
@@ -15,7 +15,7 @@ import { Router } from "@angular/router";
     selector: 'app-admin',
     templateUrl: './admin.page.html',
     imports: [IonIcon,
-    IonCardContent, IonCardTitle, IonCardHeader, IonContent, IonCard, IonButton, IonCardSubtitle, DatePipe],
+        IonCardContent, IonCardTitle, IonCardHeader, IonContent, IonCard, IonButton, IonCardSubtitle, DatePipe],
     styles: [`
         div.tournament-cards {
             display: flex;
@@ -35,18 +35,37 @@ import { Router } from "@angular/router";
 })
 export class AdminPage implements OnInit, OnDestroy {
 
-    
+
     modalCtrl = inject(ModalController);
-    tService = inject(TournamentsService);
     messageService = inject(MessageService);
     router = inject(Router);
-    
-    availableTournaments: WritableSignal<Tournament[] | null> = signal(null);
-    
+    tStore = inject(AdminTournamentsStore);
+    loadingCtrl = inject(LoadingController);
+    availableTournaments: Signal<Tournament[] | null> = signal(null);
+
     destroy$ = new Subject<void>();
     
+    
+
     constructor() {
         addIcons({ addOutline });
+        
+        effect(async () => {
+            const loading = this.tStore.isLoading();
+            if (loading) {
+                const ctrl = await this.loadingCtrl.create({
+                    message: 'Loading...',
+                });
+                await ctrl.present();
+            } 
+        });
+        
+        effect(async () => {
+            const loading = this.tStore.isLoading();
+            if (!loading) {
+                await this.loadingCtrl.dismiss();
+            }
+        });
     }
 
     ngOnDestroy(): void {
@@ -57,28 +76,16 @@ export class AdminPage implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.updateTournaments();
     }
-    
+
     editTournament(tournament: Tournament, $event: PointerEvent) {
         this.router.navigate(['/admin/tournament', tournament.id]);
     }
-    
-    updateTournaments() {
-        this.tService.getTournaments()
-            .pipe(
-                first(),
-                takeUntil(this.destroy$)
-            )
-            .subscribe({
-            next: (tournaments) => {
-                this.availableTournaments.set(tournaments);
-            },
-            error: (err) => {
-                this.messageService.newMessage("Failed to fetch tournaments", "danger", 2000);
-                console.error("Failed to fetch tournaments:", err);
-            }
-        });
+
+    async updateTournaments() {
+        await this.tStore.loadTournaments();
+        this.availableTournaments = this.tStore.entities;
     }
-    
+
     async removeTournament(tournament: Tournament, $event: PointerEvent) {
         $event.stopPropagation();
         const confirmed = await this.messageService.confirm({
@@ -92,44 +99,35 @@ export class AdminPage implements OnInit, OnDestroy {
             return;
         }
         
-        this.tService.deleteTournament(tournament.id).subscribe({
-            next: () => {
-                this.messageService.newMessage(`Tournament "${tournament.name}" deleted successfully`, "success", 2000);
-                this.updateTournaments();
-            },
-            error: (err) => {
-                this.messageService.newMessage(`Failed to delete tournament "${tournament.name}": ${err.error.error}`, "danger", 2000);
-                console.error('Failed to delete tournament:', err);
-            }
-        });
+        try {
+            await this.tStore.removeTournament(tournament.id);
+            this.messageService.newMessage(`Tournament "${tournament.name}" deleted successfully`, "success", 2000);
+        } catch (error) {
+            this.messageService.newMessage(`Failed to delete tournament "${tournament.name}"`, "danger", 2000);
+            console.error('Failed to delete tournament:', error);
+        }
     }
 
     async addTournament($event: PointerEvent) {
         const modal = await this.modalCtrl.create({
             component: TournamentForm, componentProps: {
-                tournament: null 
+                tournament: null
             }
         });
         modal.present();
-        
+
         const { data, role } = await modal.onWillDismiss();
         if (role !== 'submit') {
             console.log('Modal dismissed without submission');
             return;
         }
         
-        this.tService.createTournament(data).subscribe({
-            next: (tournament) => {
-                console.log('Tournament created successfully:', tournament);
-                this.updateTournaments();
-            },
-            error: (err) => {
-                this.messageService.newMessage(`Failed to create tournament ${err.error.error}`, "danger", 2000);
-                console.error('Failed to create tournament:', err);
-            }
-        });
-        
-        console.log('Modal submitted with data:', data);
-
+        try {
+            const createdTournament = await this.tStore.createTournament(data);
+            this.messageService.newMessage(`Tournament "${createdTournament.name}" created successfully`, "success", 2000);
+        } catch (error) {
+            this.messageService.newMessage(`Failed to create tournament "${data.name}"`, "danger", 2000);
+            console.error('Failed to create tournament:', error);
+        }
     }
 }
